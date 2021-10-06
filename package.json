@@ -10,14 +10,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cheerio-httpcli": "^0.7.4",
+    "cheerio-httpcli": "^0.8.1",
+    "chowdown": "^1.2.5",
+    "chromedriver": "^94.0.0",
     "csvtojson": "^2.0.10",
     "exceljs": "^3.9.0",
     "iconv-lite": "^0.6.0",
+    "js": "^0.1.0",
+    "jschardet": "^2.2.1",
+    "json-2-csv": "^3.10.2",
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
+    "pdf2json": "^1.2.0",
     "puppeteer": "^1.18.1",
     "puppeteer-core": "^4.0.0",
+    "selenium-webdriver": "^4.0.0-beta.3",
     "xlsx-writestream": "^0.5.1"
   }
 }

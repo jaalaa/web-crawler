@@ -11,10 +11,8 @@ if "TRUE" == "%1"  (
 	rem 定期ジョブ
 	
 	rem call
-	call node C:\web-crawler\update.js 1
-		
-	set aaa ="aaa?"
-	
+	call node C:\web-crawler3\checkwebitems.js 1
+			
 ) else (
 	
 	rem パラメータ入力
@@ -26,7 +24,7 @@ if "%USR_INPUT_STR%" == "Y" (
 	echo 非定期バッチの開始
 
 	rem call
-	call node C:\web-crawler\update.js 2
+	call node C:\web-crawler3\checkwebitems.js 2
 
 	rem パラメータ入力
 	set /P USR_INPUT_STR="終了します（OK?）: "

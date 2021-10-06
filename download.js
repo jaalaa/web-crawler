@@ -61,21 +61,28 @@ async function download_all_data(){
 }
 async function downloadAllData(download_list){
     for(let i=0; i<download_list.length;i++){
-
+        var pdfcnt = 1;
+        var imgcnt = 1;
+        
         console.log(download_list[i])
 
         var errorback = async function(){
             download_list[i].result = 'Error'
             writelog(logformat('Download Err!', download_list[i]))
+            console.log( logformat('Download Err!', download_list[i]))
         }
         var callback = async function(){
             download_list[i].result = 'OK'
             writelog(logformat('Download Done!', download_list[i]))
+            console.log( logformat('Download Done!', download_list[i]))
         }
         if(download_list[i].type == 'img'){
-            await download(download_list[i] , callback, errorback);
+//            await download(download_list[i] , callback, errorback);
+            await setTimeout(download, Math.round( imgcnt/50 ) * config.downloadInfo.time * 1000, download_list[i], callback, errorback);
+            imgcnt++;
         }else{
-            await setTimeout(download, i * config.downloadInfo.time * 1000, download_list[i], callback, errorback);
+            await setTimeout(download, pdfcnt * config.downloadInfo.time * 1000, download_list[i], callback, errorback);
+            pdfcnt++;
         }
 
     }
@@ -88,7 +95,7 @@ function download_one_item( _item, download_list , errorback ){
         writelog(logformat("Error:",null, ret.error))
         writelog(logformat("Error:response=",null,ret.response))
         writelog(logformat("Error:statusCode=" ,null,ret.response.statusCode))
-        writelog(logformat('Download Err!', _item))
+        writelog(logformat('Download Err!', null,_item))
 //        writelog("[" + yyyymmdd_hhmm() + "]" + type +"Error:" + ret.error ,true);
 //        writelog("[" + yyyymmdd_hhmm() + "]" + type +"Error:response=" + ret.response ,true);
 //        writelog("[" + yyyymmdd_hhmm() + "]" + type +"Error:statusCode=" + ret.response.statusCode ,true);
@@ -142,38 +149,46 @@ async function getImgInfo(_script){
 
 async function getDownloadInfo( _img_data , _itemsID, download_list){
 
-    // download dir
-    let filedir = config.downloadInfo.dir_name + _itemsID + "/"
+    if( process.argv[4] == 'Y' ){
+        // download dir
+        let filedir = config.downloadInfo.dir_name + _itemsID + "/"
 
-    for(let i=0; i<_img_data.length; i++){
-        const img_url = _img_data[i].full
+        for(let i=0; i<_img_data.length; i++){
+            const img_url = _img_data[i].full
 
-        // download file name
-        const img_file = filedir + config.downloadInfo.img_name + '_' + _itemsID + '_' + i + '.jpg'
+            // download file name
+            // const img_file = filedir + config.downloadInfo.img_name + _itemsID + '_' + i + '.jpg'
+        const fromURL = img_url.split('/')
+        const img_file = filedir + fromURL[fromURL.length - 1]
 
-        download_list.push({
-            url: img_url,
-            path: img_file,
-            id: _itemsID,
-            type: 'img'
-        })
+            download_list.push({
+                url: img_url,
+                path: img_file,
+                id: _itemsID,
+                type: 'img'
+            })
+        }
     }
 
-    // download URL
-    let url = config.downloadInfo.pdfDownloadURL + _itemsID + "/index.pdf"
+    
+    if( process.argv[3] == 'Y' ){
 
-    // download dir
-    let filedir1 = config.downloadInfo.dir_name + _itemsID + "\\"
-    // download file name
-    let pdf = filedir1 + config.downloadInfo.pdf_name + _itemsID + '.pdf'
+        // download URL
+        let url = config.downloadInfo.pdfDownloadURL + _itemsID + "/index.pdf"
 
-    download_list.push({
-        url: url,
-        path: pdf,
-        id: _itemsID,
-        type: 'pdf'
-    })
+        // download dir
+        let filedir1 = config.downloadInfo.dir_name + _itemsID + "\\"
+        // download file name
+        let pdf = filedir1 + config.downloadInfo.pdf_name + _itemsID + '.pdf'
 
+        download_list.push({
+            url: url,
+            path: pdf,
+            id: _itemsID,
+            type: 'pdf'
+        })
+
+    }
     return download_list
 }
 
@@ -253,10 +268,25 @@ function yyyymmdd() {
 }
 
 async function main(){
-    if( process.argv[2] === 'Y' || process.argv[2] === 'N' ){
+    if( process.argv[2] === 'Y' || process.argv[2] === 'N'){
 
-        await download_all_data()
-    
+        if( process.argv[3] == 'Y' || process.argv[3] == 'N'){
+
+            if( process.argv[4] == 'Y' || process.argv[4] == 'N'){
+                
+                if( process.argv[3] == 'Y' || process.argv[4] == 'Y'){
+                    console.log("処理開始！")
+                    await download_all_data()
+
+                }else{
+                    console.log("パラメータエラー:（ダウンロード対象ありません）" + process.argv[3] +","+ process.argv[4])
+                }
+            }else{
+                console.log("パラメータエラー:（イメージダウンロード）" + process.argv[4])
+            }        
+        }else{
+            console.log("パラメータエラー:（PDFダウンロード）" + process.argv[3])
+        }        
     }else{
     
         console.log("パラメータエラー:" + process.argv[2])
