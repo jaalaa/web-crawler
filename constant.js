@@ -27,7 +27,7 @@ exports.eichholtz_envConf = {
 
 exports.loginURL = 'https://www.eichholtz.com/en/customer/account/login/'
 exports.collection = 'https://www.eichholtz.com/en/collection.html'
-exports.collectionMulti = 'https://www.eichholtz.com/en/customer/account/login/'
+exports.collectionMulti = 'https://www.eichholtz.com/en/collection.html?p='
 
 exports.downloadInfo = {
 	targetPath :  path + 'output\\',
